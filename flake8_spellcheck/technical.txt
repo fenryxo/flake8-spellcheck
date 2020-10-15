@@ -18,6 +18,7 @@ fixme
 float32
 float64
 frontend
+fs
 geoip
 geoip2
 getter
@@ -26,6 +27,7 @@ gitlab
 grafana
 gzip
 hardcode
+hardlink
 hashicorp
 hostname
 int
@@ -58,6 +60,7 @@ stderr
 stdin
 stdout
 stdout
+subdirectory
 symlink
 titlecase
 tls
