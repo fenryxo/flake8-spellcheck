@@ -185,6 +185,9 @@ class SpellCheckPlugin:
 
         tokens = []
         for word in value.split(" "):
+            if token_info.type == tokenize.COMMENT and word.lower().strip("'").strip('"') in self.words:
+                continue
+
             case = detect_case(word)
             if case == "url":
                 # Nothing to do here
