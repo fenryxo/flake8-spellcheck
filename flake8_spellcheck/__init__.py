@@ -76,6 +76,8 @@ def get_code(token_type):
         return "SC100"
     elif token_type == tokenize.NAME:
         return "SC200"
+    elif token_type == tokenize.STRING:
+        return "SC300"
     else:
         raise ValueError("Unknown token_type {}".format(token_type))
 
@@ -128,7 +130,7 @@ class SpellCheckPlugin:
         parser.add_option(
             "--spellcheck-targets",
             help="Specify the targets to spellcheck",
-            default="names,comments",
+            default="names,comments,strings",
             comma_separated_list=True,
             parse_from_config=True,
         )
@@ -173,8 +175,16 @@ class SpellCheckPlugin:
             and token_info.string.lstrip("#").split()[0] != "noqa:"
         )
 
+    def _is_valid_string(self, token_info):
+        return (
+            token_info.type == tokenize.STRING
+            and "strings" in self.spellcheck_targets
+        )
+
     def _parse_token(self, token_info):
         if token_info.type == tokenize.NAME and "names" in self.spellcheck_targets:
+            value = token_info.string
+        elif self._is_valid_string(token_info):
             value = token_info.string
         elif self._is_valid_comment(token_info):
             # strip out all `noqa: [code]` style comments so they aren't erroneously checked
@@ -185,7 +195,11 @@ class SpellCheckPlugin:
 
         tokens = []
         for word in value.split(" "):
-            if token_info.type == tokenize.COMMENT and word.lower().strip("'").strip('"') in self.words:
+            if (
+                token_info.type in (tokenize.COMMENT, tokenize.STRING)
+                and word.lower().strip("'").strip('"') in self.words
+            ):
+                # Full match
                 continue
 
             case = detect_case(word)
@@ -199,7 +213,7 @@ class SpellCheckPlugin:
 
         if token_info.type == tokenize.NAME:
             use_symbols = False
-        elif token_info.type == tokenize.COMMENT:
+        elif token_info.type in (tokenize.COMMENT, tokenize.STRING):
             use_symbols = True
 
         for error_tuple in self._detect_errors(tokens, use_symbols, token_info.type):
