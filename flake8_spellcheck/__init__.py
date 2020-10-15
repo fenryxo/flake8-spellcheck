@@ -1,7 +1,7 @@
 import os
 import re
 import tokenize
-from string import ascii_lowercase, ascii_uppercase, digits
+from string import ascii_lowercase, ascii_uppercase, digits, ascii_letters
 
 import pkg_resources
 
@@ -27,7 +27,7 @@ def parse_camel_case(name, position):
     buffer = ""
     for c in name:
         index += 1
-        if c in ascii_lowercase or c in digits or c in ("'"):
+        if c in ascii_lowercase or c in "'":
             buffer += c
         else:
             if buffer:
@@ -49,7 +49,7 @@ def parse_snake_case(name, position):
     buffer = ""
     for c in name:
         index += 1
-        if c in ascii_lowercase or c in digits or c in ascii_uppercase:
+        if c in ascii_letters:
             buffer += c
         else:
             if buffer:
