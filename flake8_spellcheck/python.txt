@@ -45,10 +45,13 @@ env
 environ
 errno
 expanduser
+expandvars
 findall
 flake8
 fnmatch
+followlinks
 frozenset
+fspath
 functools
 getattr
 getcwd
@@ -62,6 +65,7 @@ hexdigest
 importlib
 init
 int
+isabs
 isclass
 isdigit
 isdir
@@ -98,6 +102,7 @@ netloc
 noqa
 optionxform
 optparse
+pathlib
 pkgutil
 posixpath
 pprint
@@ -122,6 +127,7 @@ rsplit
 rstrip
 scandir
 setattr
+setdefault
 setuptools
 shutil
 sizeof
