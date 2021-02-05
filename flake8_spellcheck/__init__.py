@@ -6,12 +6,15 @@ from string import ascii_lowercase, ascii_uppercase, digits, ascii_letters
 import pkg_resources
 
 NOQA_REGEX = re.compile(r"#[\s]*noqa:[\s]*[\D]+[\d]+")
+DOTTED_REGEX = re.compile(r"^\w+(\.\w+)+$", re.A)
 
 
 # Really simple detection function
 def detect_case(name):
     if name.startswith("http"):
         return "url"
+    if DOTTED_REGEX.match(name):
+        return "dotted"
     # ignore leading underscores when testing for snake case
     elif "_" in name.lstrip("_"):
         return "snake"
@@ -185,7 +188,7 @@ class SpellCheckPlugin:
         if token_info.type == tokenize.NAME and "names" in self.spellcheck_targets:
             value = token_info.string
         elif self._is_valid_string(token_info):
-            value = token_info.string
+            value = token_info.string.strip('"')
         elif self._is_valid_comment(token_info):
             # strip out all `noqa: [code]` style comments so they aren't erroneously checked
             # see https://github.com/MichaelAquilina/flake8-spellcheck/issues/36 for info
@@ -203,7 +206,7 @@ class SpellCheckPlugin:
                 continue
 
             case = detect_case(word)
-            if case == "url":
+            if case in ("url", "dotted"):
                 # Nothing to do here
                 continue
             elif case == "snake":
