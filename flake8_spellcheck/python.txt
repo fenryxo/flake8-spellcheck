@@ -50,6 +50,7 @@ findall
 flake8
 fnmatch
 followlinks
+fromisoformat
 frozenset
 fspath
 functools
